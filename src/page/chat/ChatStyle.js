@@ -34,15 +34,27 @@ export const InfoContainer = styled.div`
     display: flex;
     align-items: center;
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
 `
 
 export const Title = styled.div`
     font-size: 24px;
     font-style: normal;
-    font-weight: 600;
+    font-weight: 700;
     line-height: normal;
 `
+
+export const SubTitle = styled.div`
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    color: white;
+    padding: 8px 12px;
+    background-color: #4a4a4a;
+    border-radius: 8px;
+`
+
 
 export const ExitButton = styled.button`
     display: flex;
@@ -119,10 +131,71 @@ export const SubmitButton = styled.button`
     transition: background, scale 0.2s ease-in-out;
 `
 
+
+export const MatchButton = styled.button`
+    display: flex;
+    height: 52px;
+    padding: 12px 20px;
+    justify-content: center;
+    align-items: center;
+    min-width: 100px;
+
+    border-radius: 12px;
+    background: #FF4D00;
+    outline: none;
+    border: none;
+    cursor: pointer;
+
+    color: #FFF;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    
+    &:hover {
+        background: #e24600;
+    }
+    &:active {
+        scale: 0.96;
+    }
+    transition: background, scale 0.2s ease-in-out;
+`
+
 export const ButtonText = styled.div`
     color: #FFF;
     font-size: 18px;
     font-style: normal;
     font-weight: 600;
     line-height: normal;
+`
+
+export const CloseButton = styled.button`
+    display: flex;
+    height: 52px;
+    padding: 12px 20px;
+    justify-content: center;
+    align-items: center;
+    min-width: 100px;
+
+    border-radius: 12px;
+    background: #f4f4f4;
+    outline: none;
+    border: none;
+    cursor: pointer;
+
+    color: #afafaf;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+
+    &:hover {
+        background: #eaeaea;
+    }
+
+    &:active {
+        scale: 0.96;
+    }
+
+    transition: background, scale 0.2s ease-in-out;
 `

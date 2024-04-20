@@ -11,17 +11,32 @@ import {
     SubmitButton, SubTitle, Title
 } from "./ChatStyle";
 import ChatCell from "./component/ChatCell";
+import {getCookie, setCookie} from "../../repository/cookie/Cookie";
+import {v4} from "uuid";
+import {defaultKeyMap} from "@testing-library/user-event/dist/keyboard/keyMap";
 
 const Chat = () => {
-
+    const [count, setCount] = useState('..');
     const [flow, setFlow] = useState('home');
     const [chatList, setChatList] = useState([]);
     const input = useRef(null);
     const chatContainerRef = useRef(null);
 
     useEffect(() => {
+
+        let token = getCookie("token");
+
+        if (!token) {
+            token = v4();
+            setCookie('token', token);
+        }
+
+        chatPingSocket.emit('연결', {id: token});
         chatPingSocket.on("message", (data) => {
             setChatList(data);
+        });
+        chatPingSocket.on('count', (data) => {
+            setCount(data);
         });
     }, []);
 
@@ -48,6 +63,22 @@ const Chat = () => {
                                 alignItems: 'center',
                                 gap: '12px'
                             }}>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        fontSize: '16px',
+                                        fontWeight: '500',
+                                        alignItems: 'center',
+                                        gap: '8px'
+                                    }}
+                                >온라인 {count}명 <span style={{
+                                    width: '12px',
+                                    height: '12px',
+                                    background: '#17ff00',
+                                    borderRadius: '50%',
+                                    marginBottom: '3px',
+                                    border: '2px solid #eee',
+                                }}></span> </div>
                                 <SubTitle>대구소프트웨어마이스터고등학교</SubTitle>
                                 <Title>두근두근 당신 곁의 이성친구...</Title>
                             </div>

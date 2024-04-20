@@ -1,6 +1,15 @@
 import {useEffect, useRef, useState} from "react";
 import chatPingSocket from "../../repository/socket/Socket";
-import {ButtonText, ChatContainer, Container, Content, Input, InputContainer, SubmitButton} from "./ChatStyle";
+import {
+    ButtonText,
+    ChatContainer,
+    Container,
+    Content, ExitButton,
+    InfoContainer,
+    Input,
+    InputContainer,
+    SubmitButton, Title
+} from "./ChatStyle";
 import ChatCell from "./component/ChatCell";
 
 const Chat = () => {
@@ -29,6 +38,10 @@ const Chat = () => {
     return (
         <Container>
             <Content>
+                <InfoContainer>
+                    <Title>대화중</Title>
+                    <ExitButton>나가기</ExitButton>
+                </InfoContainer>
                 <ChatContainer ref={chatContainerRef}>
                     {chatList.map((item, index) => (<ChatCell chat={item}/>))}
                 </ChatContainer>

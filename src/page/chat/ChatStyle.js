@@ -30,6 +30,40 @@ export const Content = styled.div`
     box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.16);
 `
 
+export const InfoContainer = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+`
+
+export const Title = styled.div`
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+`
+
+export const ExitButton = styled.button`
+    display: flex;
+    height: 44px;
+    padding: 8px 16px;
+    justify-content: center;
+    align-items: center;
+    color: red;
+    background-color: white;
+    border-radius: 12px;
+    border: 1px solid red;
+    outline: none;
+    cursor: pointer;
+
+    &:active {
+        scale: 0.96;
+    }
+
+    transition: background, scale 0.2s ease-in-out;
+`
+
 export const ChatContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -48,7 +82,7 @@ export const InputContainer = styled.div`
 `
 
 export const Input = styled.input`
-    flex: 1 0 0;
+    width: 100%;
     align-self: stretch;
 
     border-radius: 12px;
@@ -68,7 +102,7 @@ export const SubmitButton = styled.button`
     padding: 12px 20px;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    min-width: 100px;
 
     border-radius: 12px;
     background: #FF4D00;

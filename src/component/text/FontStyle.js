@@ -24,7 +24,7 @@ export class FontStyle {
     static fontWeight = (fontStyle) => {
         switch (fontStyle) {
             case FontStyle.TITLE:
-                return 800;
+                return 900;
             case FontStyle.SUBTITLE:
                 return 800;
             case FontStyle.BODY:

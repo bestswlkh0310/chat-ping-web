@@ -1,10 +1,16 @@
 import {TextContainer} from "./TextStyle";
 import {FontStyle} from "./FontStyle";
 
-const Text = ({fontStyle, children}) => {
+const Text = (
+    {
+        fontStyle=FontStyle.BODY,
+        fontSize,
+        children
+    }
+) => {
     return (
         <TextContainer
-            fontSize={`${FontStyle.fontSize(fontStyle)}px`}
+            fontSize={`${fontSize ?? FontStyle.fontSize(fontStyle)}px`}
             fontWeight={`${FontStyle.fontWeight(fontStyle)}`}
         >{children}</TextContainer>
     );

@@ -9,8 +9,6 @@ import {
     InputContainer
 } from "./ChatStyle";
 import ChatCell from "./component/ChatCell";
-import {getToken} from "../../repository/cookie/Cookie";
-import chatPingAxios from "../../repository/http/Http";
 import Text from "../../component/text/Text";
 import {FontStyle} from "../../component/text/FontStyle";
 import Label from "../../component/label/Label";
@@ -18,8 +16,8 @@ import Button from "../../component/button/Button";
 import ButtonType from "../../component/button/ButtonType";
 import ButtonSize from "../../component/button/ButtonSize";
 import ButtonColor from "../../component/button/ButtonColor";
-
-const id = getToken();
+import {getToken, TokenType} from "../../repository/cookie/Cookie";
+import {useNavigate} from "react-router-dom";
 
 const Chat = () => {
     const [count, setCount] = useState('..');
@@ -27,53 +25,57 @@ const Chat = () => {
     const [chatList, setChatList] = useState([]);
     const input = useRef(null);
     const chatContainerRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        chatPingSocket.emit('online', id);
+        if (!getToken(TokenType.ACCESS_TOKEN)) {
+            navigate('/login');
+        }
+        // chatPingSocket.emit('online', id);
         setInterval(() => {
-            chatPingSocket.emit('online', id);
+            // chatPingSocket.emit('online', id);
         }, 3_000);
 
         chatPingSocket.on('online', (count) => {
             setCount(count);
         });
         chatPingSocket.on('matched', (data) => {
-            const {member1, member2} = data;
-            if (member1 === id || member2 === id) {
-                setFlow('chat');
-            }
+            // const {member1, member2} = data;
+            // if (member1 === id || member2 === id) {
+            //     setFlow('chat');
+            // }
         });
         chatPingSocket.on('cancel', (data) => {
             const {member1, member2} = data;
-            if (member1 === id || member2 === id) {
-                setFlow('home');
-                console.log('매칭종료')
-                alert('매칭이 종료되었습니다');
-            }
+            // if (member1 === id || member2 === id) {
+            //     setFlow('login');
+            //     console.log('매칭종료')
+            //     alert('매칭이 종료되었습니다');
+            // }
         });
         chatPingSocket.on('message', (data) => {
             const {member1, member2, chatList} = data;
             console.log(member1, member2, chatList);
-            if (id === member2 || id === member1) {
-                setChatList(chatList);
-                chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-            }
+            // if (id === member2 || id === member1) {
+            //     setChatList(chatList);
+            //     chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+            // }
         });
     }, []);
 
     const startMatch = () => {
         setFlow('matching');
         setChatList([]);
-        chatPingAxios.post(`/match/${id}`)
-            .then(res => {
-                const data = res.data;
-                console.log(data);
-            })
-            .catch(e => console.log(e));
+        // chatPingAxios.post(`/match/${id}`)
+        //     .then(res => {
+        //         const data = res.data;
+        //         console.log(data);
+        //     })
+        //     .catch(e => console.log(e));
     };
 
     const cancelMatching = () => {
-        chatPingSocket.emit('cancel', id);
+        // chatPingSocket.emit('cancel', id);
     };
 
     const sendMessage = () => {
@@ -82,8 +84,7 @@ const Chat = () => {
             return;
         }
         chatPingSocket.emit("message", {
-            message: inputValue,
-            id
+            message: inputValue
         });
         chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         input.current.value = "";
@@ -155,7 +156,7 @@ const Chat = () => {
                             <Button color={ButtonColor.GRAY} type={ButtonType.OUTLINE} size={ButtonSize.SMALL} onClick={cancelMatching}>나가기</Button>
                         </InfoContainer>
                         <ChatContainer ref={chatContainerRef}>
-                            {chatList.map((item, index) => (<ChatCell chat={item} isMe={item.senderId===id}/>))}
+                            {chatList.map((item, index) => (<ChatCell chat={item} isMe={true}/>))}
                         </ChatContainer>
                         <InputContainer>
                             <Input ref={input} onKeyDown={(e) => {

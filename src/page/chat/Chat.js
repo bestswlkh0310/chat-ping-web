@@ -11,9 +11,7 @@ import {
     SubmitButton, SubTitle, Title
 } from "./ChatStyle";
 import ChatCell from "./component/ChatCell";
-import {getCookie, setCookie} from "../../repository/cookie/Cookie";
-import {v4} from "uuid";
-import {defaultKeyMap} from "@testing-library/user-event/dist/keyboard/keyMap";
+import {getToken} from "../../repository/cookie/Cookie";
 
 const Chat = () => {
     const [count, setCount] = useState('..');
@@ -23,33 +21,15 @@ const Chat = () => {
     const chatContainerRef = useRef(null);
 
     useEffect(() => {
+        setInterval(() => {
+            const token = getToken();
+            chatPingSocket.emit('online', token);
+        }, 3_000);
 
-        let token = getCookie("token");
-
-        if (!token) {
-            token = v4();
-            setCookie('token', token);
-        }
-
-        chatPingSocket.emit('연결', {id: token});
-        chatPingSocket.on("message", (data) => {
-            setChatList(data);
-        });
-        chatPingSocket.on('count', (data) => {
-            setCount(data);
+        chatPingSocket.on('online', (count) => {
+            setCount(count);
         });
     }, []);
-
-    const sendMessage = () => {
-        const inputValue = input.current.value;
-        if (inputValue === "") {
-            return;
-        }
-        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        chatPingSocket.emit("message", inputValue);
-
-        input.current.value = "";
-    };
 
     return (
         <Container>
@@ -138,3 +118,17 @@ const Chat = () => {
 };
 
 export default Chat;
+
+
+
+
+// const sendMessage = () => {
+//     const inputValue = input.current.value;
+//     if (inputValue === "") {
+//         return;
+//     }
+//     chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+//     chatPingSocket.emit("message", inputValue);
+//
+//     input.current.value = "";
+// };

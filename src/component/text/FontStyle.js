@@ -16,6 +16,8 @@ export class FontStyle {
                 return 18;
             case FontStyle.LABEL:
                 return 16;
+            default:
+                return 0;
         }
     }
 
@@ -29,6 +31,8 @@ export class FontStyle {
                 return 500;
             case FontStyle.LABEL:
                 return 500;
+            default:
+                return 0;
         }
     }
 }

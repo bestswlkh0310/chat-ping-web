@@ -1,5 +1,4 @@
 import {ButtonContainer} from "./ButtonStyle";
-import {FontStyle} from "../text/FontStyle";
 import Text from "../text/Text";
 import ButtonType from "./ButtonType";
 import ButtonSize from "./ButtonSize";

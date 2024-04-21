@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import chatPingSocket from "../../repository/socket/Socket";
 import {
-    ChatContainer, CloseButton,
+    ChatContainer,
     Container,
     Content,
     InfoContainer,
@@ -19,7 +19,7 @@ import ButtonType from "../../component/button/ButtonType";
 import ButtonSize from "../../component/button/ButtonSize";
 import ButtonColor from "../../component/button/ButtonColor";
 
-const token = getToken();
+const id = getToken();
 
 const Chat = () => {
     const [count, setCount] = useState('..');
@@ -29,26 +29,23 @@ const Chat = () => {
     const chatContainerRef = useRef(null);
 
     useEffect(() => {
-        const token = getToken();
-        chatPingSocket.emit('online', token);
+        chatPingSocket.emit('online', id);
         setInterval(() => {
-            chatPingSocket.emit('online', token);
+            chatPingSocket.emit('online', id);
         }, 3_000);
 
         chatPingSocket.on('online', (count) => {
             setCount(count);
         });
         chatPingSocket.on('matched', (data) => {
-            const members = data.split(' ');
-            const token = getToken();
-            if (members[0] === token || members[1] === token) {
+            const {member1, member2} = data;
+            if (member1 === id || member2 === id) {
                 setFlow('chat');
             }
         });
         chatPingSocket.on('cancel', (data) => {
-            const members = data.split(' ');
-            const token = getToken();
-            if (members[0] === token || members[1] === token) {
+            const {member1, member2} = data;
+            if (member1 === id || member2 === id) {
                 setFlow('home');
                 console.log('매칭종료')
                 alert('매칭이 종료되었습니다');
@@ -57,8 +54,7 @@ const Chat = () => {
         chatPingSocket.on('message', (data) => {
             const {member1, member2, chatList} = data;
             console.log(member1, member2, chatList);
-            const token = getToken();
-            if (token === member2 || token === member1) {
+            if (id === member2 || id === member1) {
                 setChatList(chatList);
                 chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
             }
@@ -68,7 +64,7 @@ const Chat = () => {
     const startMatch = () => {
         setFlow('matching');
         setChatList([]);
-        chatPingAxios.post(`/match/${getToken()}`)
+        chatPingAxios.post(`/match/${id}`)
             .then(res => {
                 const data = res.data;
                 console.log(data);
@@ -77,7 +73,7 @@ const Chat = () => {
     };
 
     const cancelMatching = () => {
-        chatPingSocket.emit('cancel', getToken());
+        chatPingSocket.emit('cancel', id);
     };
 
     const sendMessage = () => {
@@ -87,7 +83,7 @@ const Chat = () => {
         }
         chatPingSocket.emit("message", {
             message: inputValue,
-            token: getToken()
+            id
         });
         chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         input.current.value = "";
@@ -159,7 +155,7 @@ const Chat = () => {
                             <Button color={ButtonColor.GRAY} type={ButtonType.OUTLINE} size={ButtonSize.SMALL} onClick={cancelMatching}>나가기</Button>
                         </InfoContainer>
                         <ChatContainer ref={chatContainerRef}>
-                            {chatList.map((item, index) => (<ChatCell chat={item} isMe={item.sender===token}/>))}
+                            {chatList.map((item, index) => (<ChatCell chat={item} isMe={item.senderId===id}/>))}
                         </ChatContainer>
                         <InputContainer>
                             <Input ref={input} onKeyDown={(e) => {

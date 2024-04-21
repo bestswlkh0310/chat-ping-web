@@ -12,6 +12,7 @@ import {
 } from "./ChatStyle";
 import ChatCell from "./component/ChatCell";
 import {getToken} from "../../repository/cookie/Cookie";
+import chatPingAxios from "../../repository/http/Http";
 
 const Chat = () => {
     const [count, setCount] = useState('..');
@@ -19,10 +20,12 @@ const Chat = () => {
     const [chatList, setChatList] = useState([]);
     const input = useRef(null);
     const chatContainerRef = useRef(null);
+    const [roomId, setRoomId] = useState(null);
 
     useEffect(() => {
+        const token = getToken();
+        chatPingSocket.emit('online', token);
         setInterval(() => {
-            const token = getToken();
             chatPingSocket.emit('online', token);
         }, 3_000);
 
@@ -30,6 +33,27 @@ const Chat = () => {
             setCount(count);
         });
     }, []);
+
+    const startMatch = () => {
+        setFlow('matching');
+        chatPingAxios.post(`/match/${getToken()}`)
+            .then(res => {
+                const data = res.data;
+                console.log(data);
+            })
+            .catch(e => console.log(e));
+    };
+
+    const sendMessage = () => {
+        const inputValue = input.current.value;
+        if (inputValue === "") {
+            return;
+        }
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        chatPingSocket.emit("message", inputValue);
+
+        input.current.value = "";
+    };
 
     return (
         <Container>
@@ -66,7 +90,7 @@ const Chat = () => {
                         <img
                             src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Face%20Blowing%20a%20Kiss.png"
                             alt="Face Blowing a Kiss" width="200px"/>
-                        <MatchButton onClick={() => { setFlow('matching') }}>매칭시작</MatchButton>
+                        <MatchButton onClick={startMatch}>매칭시작</MatchButton>
                     </>
                 )}
                 {flow === 'chat' && (
@@ -118,17 +142,3 @@ const Chat = () => {
 };
 
 export default Chat;
-
-
-
-
-// const sendMessage = () => {
-//     const inputValue = input.current.value;
-//     if (inputValue === "") {
-//         return;
-//     }
-//     chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-//     chatPingSocket.emit("message", inputValue);
-//
-//     input.current.value = "";
-// };

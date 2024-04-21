@@ -28,6 +28,18 @@ export const Content = styled.div`
     border-radius: 12px;
     background: #FFF;
     box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.16);
+    @media screen and (max-width: 1000px) {
+        width: 55%;
+    }
+    @media screen and (max-width: 800px) {
+        width: 60%;
+    }
+    @media screen and (max-width: 600px) {
+        width: 80%;
+    }
+    @media screen and (max-width: 500px){
+        width: 90%;
+    }
 `
 
 export const InfoContainer = styled.div`

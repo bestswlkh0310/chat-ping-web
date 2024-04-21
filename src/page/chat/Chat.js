@@ -32,6 +32,21 @@ const Chat = () => {
         chatPingSocket.on('online', (count) => {
             setCount(count);
         });
+        chatPingSocket.on('matched', (data) => {
+            const members = data.split(' ');
+            const token = getToken();
+            if (members[0] === token || members[1] === token) {
+                setFlow('chat');
+            }
+        });
+        chatPingSocket.on('cancel', (data) => {
+            const members = data.split(' ');
+            const token = getToken();
+            if (members[0] === token || members[1] === token) {
+                alert('매칭이 종료되었습니다');
+                setFlow('home');
+            }
+        })
     }, []);
 
     const startMatch = () => {
@@ -43,6 +58,10 @@ const Chat = () => {
             })
             .catch(e => console.log(e));
     };
+
+    const cancelMatching = () => {
+        chatPingSocket.emit('cancel', getToken());
+    }
 
     const sendMessage = () => {
         const inputValue = input.current.value;
@@ -93,12 +112,31 @@ const Chat = () => {
                         <MatchButton onClick={startMatch}>매칭시작</MatchButton>
                     </>
                 )}
+                {flow === 'matching' && (
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '12px'
+                        }}
+                    >
+                        <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Sparkling%20Heart.png" alt="Sparkling Heart" width="160px"/>
+                        <Title>당신과 가장 어울리는 친구를 찾고 있어요...</Title>
+                        <CloseButton
+                            onClick={cancelMatching}
+                            style={{
+                                marginTop: '8px'
+                            }}
+                        >취소</CloseButton>
+                    </div>
+                )}
                 {flow === 'chat' && (
                     <>
                         <InfoContainer>
                             <Title>대화중</Title>
                             <div style={{flex: 1}}></div>
-                            <ExitButton>나가기</ExitButton>
+                            <ExitButton onClick={cancelMatching}>나가기</ExitButton>
                         </InfoContainer>
                         <ChatContainer ref={chatContainerRef}>
                             {chatList.map((item, index) => (<ChatCell chat={item}/>))}
@@ -115,27 +153,7 @@ const Chat = () => {
                         </InputContainer>
                     </>
                 )}
-                {flow === 'matching' && (
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: '12px'
-                        }}
-                    >
-                        <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Sparkling%20Heart.png" alt="Sparkling Heart" width="160px"/>
-                        <Title>당신과 가장 어울리는 친구를 찾고 있어요...</Title>
-                        <CloseButton
-                            onClick={() => {
-                                setFlow('home');
-                            }}
-                            style={{
-                                marginTop: '8px'
-                            }}
-                        >취소</CloseButton>
-                    </div>
-                )}
+
             </Content>
         </Container>
     );

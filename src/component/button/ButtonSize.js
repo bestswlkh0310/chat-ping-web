@@ -13,6 +13,8 @@ class ButtonSize {
                 return FontStyle.BODY;
             case ButtonSize.SMALL:
                 return FontStyle.LABEL;
+            default:
+                return FontStyle.BODY;
         }
     }
 
@@ -24,6 +26,8 @@ class ButtonSize {
                 return '8px 12px'
             case ButtonSize.SMALL:
                 return '6px 10px'
+            default:
+                return '0';
         }
     }
 }

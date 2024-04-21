@@ -1,18 +1,23 @@
 import {useEffect, useRef, useState} from "react";
 import chatPingSocket from "../../repository/socket/Socket";
 import {
-    ButtonText,
     ChatContainer, CloseButton,
     Container,
-    Content, ExitButton,
+    Content,
     InfoContainer,
     Input,
-    InputContainer, MatchButton,
-    SubmitButton, SubTitle, Title
+    InputContainer
 } from "./ChatStyle";
 import ChatCell from "./component/ChatCell";
 import {getToken} from "../../repository/cookie/Cookie";
 import chatPingAxios from "../../repository/http/Http";
+import Text from "../../component/text/Text";
+import {FontStyle} from "../../component/text/FontStyle";
+import Label from "../../component/label/Label";
+import Button from "../../component/button/Button";
+import ButtonType from "../../component/button/ButtonType";
+import ButtonSize from "../../component/button/ButtonSize";
+import ButtonColor from "../../component/button/ButtonColor";
 
 const Chat = () => {
     const [count, setCount] = useState('..');
@@ -46,7 +51,11 @@ const Chat = () => {
                 alert('매칭이 종료되었습니다');
                 setFlow('home');
             }
-        })
+        });
+        chatPingSocket.on('message', (data) => {
+            const {member1, member2, chatList} = data;
+            console.log(member1, member2, chatList);
+        });
     }, []);
 
     const startMatch = () => {
@@ -61,7 +70,7 @@ const Chat = () => {
 
     const cancelMatching = () => {
         chatPingSocket.emit('cancel', getToken());
-    }
+    };
 
     const sendMessage = () => {
         const inputValue = input.current.value;
@@ -69,7 +78,10 @@ const Chat = () => {
             return;
         }
         chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        chatPingSocket.emit("message", inputValue);
+        chatPingSocket.emit("message", {
+            message: inputValue,
+            token: getToken()
+        });
 
         input.current.value = "";
     };
@@ -102,14 +114,14 @@ const Chat = () => {
                                     marginBottom: '3px',
                                     border: '2px solid #eee',
                                 }}></span> </div>
-                                <SubTitle>대구소프트웨어마이스터고등학교</SubTitle>
-                                <Title>두근두근 당신 곁의 이성친구...</Title>
+                                <Label>대구소프트웨어마이스터고등학교</Label>
+                                <Text fontStyle={FontStyle.TITLE}>두근두근 당신 곁의 이성친구...</Text>
                             </div>
                         </InfoContainer>
                         <img
                             src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Face%20Blowing%20a%20Kiss.png"
                             alt="Face Blowing a Kiss" width="200px"/>
-                        <MatchButton onClick={startMatch}>매칭시작</MatchButton>
+                        <Button onClick={startMatch}>매칭시작</Button>
                     </>
                 )}
                 {flow === 'matching' && (
@@ -122,21 +134,22 @@ const Chat = () => {
                         }}
                     >
                         <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Sparkling%20Heart.png" alt="Sparkling Heart" width="160px"/>
-                        <Title>당신과 가장 어울리는 친구를 찾고 있어요...</Title>
-                        <CloseButton
+                        <Text fontStyle={FontStyle.TITLE}>당신과 가장 어울리는 친구를 찾고 있어요...</Text>
+                        <Button
+                            color={ButtonColor.GRAY}
                             onClick={cancelMatching}
                             style={{
                                 marginTop: '8px'
                             }}
-                        >취소</CloseButton>
+                        >취소</Button>
                     </div>
                 )}
                 {flow === 'chat' && (
                     <>
                         <InfoContainer>
-                            <Title>대화중</Title>
+                            <Text fontStyle={FontStyle.TITLE}>대화중</Text>
                             <div style={{flex: 1}}></div>
-                            <ExitButton onClick={cancelMatching}>나가기</ExitButton>
+                            <Button type={ButtonType.OUTLINE} size={ButtonSize.SMALL} onClick={cancelMatching}>나가기</Button>
                         </InfoContainer>
                         <ChatContainer ref={chatContainerRef}>
                             {chatList.map((item, index) => (<ChatCell chat={item}/>))}
@@ -147,13 +160,10 @@ const Chat = () => {
                                     sendMessage();
                                 }
                             }}/>
-                            <SubmitButton onClick={sendMessage}>
-                                <ButtonText>보내기</ButtonText>
-                            </SubmitButton>
+                            <Button onClick={sendMessage}>보내기</Button>
                         </InputContainer>
                     </>
                 )}
-
             </Content>
         </Container>
     );

@@ -13,7 +13,7 @@ class ButtonType {
         } else if (type === ButtonType.FILLED && color === ButtonColor.GRAY) {
             return Color.GRAY600;
         } else if (type === ButtonType.OUTLINE && color === ButtonColor.GRAY) {
-            return Color.GRAY600
+            return Color.GRAY500
         }
     };
 

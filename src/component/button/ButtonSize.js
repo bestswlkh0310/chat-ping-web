@@ -12,14 +12,18 @@ class ButtonSize {
             case ButtonSize.MEDIUM:
                 return FontStyle.BODY;
             case ButtonSize.SMALL:
-                return FontStyle.BODY;
+                return FontStyle.LABEL;
         }
     }
 
     static padding = (type) => {
         switch (type) {
             case ButtonSize.LARGE:
-                return '12px'
+                return '10px 14px'
+            case ButtonSize.MEDIUM:
+                return '8px 12px'
+            case ButtonSize.SMALL:
+                return '6px 10px'
         }
     }
 }

@@ -5,7 +5,7 @@ export const ButtonContainer = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px 14px;
+    padding: ${props => props.padding};
 
     // style
     border-radius: 12px;

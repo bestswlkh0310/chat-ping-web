@@ -19,13 +19,14 @@ import ButtonType from "../../component/button/ButtonType";
 import ButtonSize from "../../component/button/ButtonSize";
 import ButtonColor from "../../component/button/ButtonColor";
 
+const token = getToken();
+
 const Chat = () => {
     const [count, setCount] = useState('..');
     const [flow, setFlow] = useState('home');
     const [chatList, setChatList] = useState([]);
     const input = useRef(null);
     const chatContainerRef = useRef(null);
-    const [roomId, setRoomId] = useState(null);
 
     useEffect(() => {
         const token = getToken();
@@ -48,18 +49,25 @@ const Chat = () => {
             const members = data.split(' ');
             const token = getToken();
             if (members[0] === token || members[1] === token) {
-                alert('매칭이 종료되었습니다');
                 setFlow('home');
+                console.log('매칭종료')
+                alert('매칭이 종료되었습니다');
             }
         });
         chatPingSocket.on('message', (data) => {
             const {member1, member2, chatList} = data;
             console.log(member1, member2, chatList);
+            const token = getToken();
+            if (token === member2 || token === member1) {
+                setChatList(chatList);
+                chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+            }
         });
     }, []);
 
     const startMatch = () => {
         setFlow('matching');
+        setChatList([]);
         chatPingAxios.post(`/match/${getToken()}`)
             .then(res => {
                 const data = res.data;
@@ -77,12 +85,11 @@ const Chat = () => {
         if (inputValue === "") {
             return;
         }
-        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         chatPingSocket.emit("message", {
             message: inputValue,
             token: getToken()
         });
-
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         input.current.value = "";
     };
 
@@ -149,10 +156,10 @@ const Chat = () => {
                         <InfoContainer>
                             <Text fontStyle={FontStyle.TITLE}>대화중</Text>
                             <div style={{flex: 1}}></div>
-                            <Button type={ButtonType.OUTLINE} size={ButtonSize.SMALL} onClick={cancelMatching}>나가기</Button>
+                            <Button color={ButtonColor.GRAY} type={ButtonType.OUTLINE} size={ButtonSize.SMALL} onClick={cancelMatching}>나가기</Button>
                         </InfoContainer>
                         <ChatContainer ref={chatContainerRef}>
-                            {chatList.map((item, index) => (<ChatCell chat={item}/>))}
+                            {chatList.map((item, index) => (<ChatCell chat={item} isMe={item.sender===token}/>))}
                         </ChatContainer>
                         <InputContainer>
                             <Input ref={input} onKeyDown={(e) => {
@@ -160,7 +167,9 @@ const Chat = () => {
                                     sendMessage();
                                 }
                             }}/>
-                            <Button onClick={sendMessage}>보내기</Button>
+                            <Button style={{
+                                minWidth: '100px'
+                            }} onClick={sendMessage}>보내기</Button>
                         </InputContainer>
                     </>
                 )}

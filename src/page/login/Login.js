@@ -17,7 +17,8 @@ const Login = () => {
             idToken: credential
         }).then(response => {
             const res = response.data;
-            const {accessToken, refreshToken} = res;
+            const {accessToken, refreshToken, email} = res;
+            setCookie(email, 'EMAIL');
             setCookie(accessToken, TokenType.ACCESS_TOKEN);
             setCookie(refreshToken, TokenType.REFRESH_TOKEN);
             navigate('/');

@@ -6,6 +6,8 @@ import Chat from "./page/chat/Chat";
 import Matching from "./page/matching/Matching";
 import {createContext, useEffect, useState} from "react";
 import chatPingAxios from "./repository/http/Http";
+import chatPingSocket from "./repository/socket/Socket";
+import {getCookie, TokenType} from "./repository/cookie/Cookie";
 
 const makeFlowUrl = (flow) => {
     switch (flow) {
@@ -35,12 +37,26 @@ export const FlowProvider = ({children}) => {
                 window.location.replace(url);
             })
             .catch(e => {
-                console.log(e.response.data);
             });
+    };
+
+    const handleSocketLogin = () => {
+        const accessToken = getCookie(TokenType.ACCESS_TOKEN);
+        if (!accessToken) {
+            return;
+        }
+        chatPingSocket.emit('login', {
+            accessToken
+        });
     }
 
     useEffect(() => {
         handleFlow();
+        handleSocketLogin();
+
+        chatPingSocket.on('flow', () => {
+            handleFlow();
+        });
     }, []);
 
     return (

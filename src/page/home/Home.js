@@ -82,22 +82,22 @@ const Home = () => {
                         alignItems: 'center',
                         gap: '12px'
                     }}>
-                        <div
-                            style={{
-                                display: 'flex',
-                                fontSize: '16px',
-                                fontWeight: '500',
-                                alignItems: 'center',
-                                gap: '8px'
-                            }}
-                        >온라인 {count}명 <span style={{
-                            width: '12px',
-                            height: '12px',
-                            background: '#17ff00',
-                            borderRadius: '50%',
-                            marginBottom: '3px',
-                            border: '2px solid #eee',
-                        }}></span></div>
+                        {/*<div*/}
+                        {/*    style={{*/}
+                        {/*        display: 'flex',*/}
+                        {/*        fontSize: '16px',*/}
+                        {/*        fontWeight: '500',*/}
+                        {/*        alignItems: 'center',*/}
+                        {/*        gap: '8px'*/}
+                        {/*    }}*/}
+                        {/*>온라인 {count}명 <span style={{*/}
+                        {/*    width: '12px',*/}
+                        {/*    height: '12px',*/}
+                        {/*    background: '#17ff00',*/}
+                        {/*    borderRadius: '50%',*/}
+                        {/*    marginBottom: '3px',*/}
+                        {/*    border: '2px solid #eee',*/}
+                        {/*}}></span></div>*/}
                         <Label>대구소프트웨어마이스터고등학교</Label>
                         <Text fontWeight={700} fontStyle={FontStyle.TITLE}>두근두근 당신 곁의 이성친구...</Text>
                     </div>

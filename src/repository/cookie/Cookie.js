@@ -1,16 +1,10 @@
 import {Cookies} from 'react-cookie';
-import {v4} from "uuid";
 
 const cookies = new Cookies();
 
 export const TokenType = {
     ACCESS_TOKEN: 'ACCESS_TOKEN',
     REFRESH_TOKEN: 'REFRESH_TOKEN',
-}
-
-export const FlowType = {
-    IDLE: 'IDLE',
-    MATCHED: 'MATCHED'
 }
 
 export const getCookie = (type) => {

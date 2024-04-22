@@ -6,10 +6,11 @@ import ButtonColor from "../../component/button/ButtonColor";
 import ButtonType from "../../component/button/ButtonType";
 import ButtonSize from "../../component/button/ButtonSize";
 import ChatCell from "../home/component/ChatCell";
-import {useContext, useRef, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import chatPingSocket from "../../repository/socket/Socket";
 import chatPingAxios from "../../repository/http/Http";
 import {FlowContext} from "../../App";
+import {getCookie} from "../../repository/cookie/Cookie";
 
 const Chat = () => {
 
@@ -23,22 +24,40 @@ const Chat = () => {
         if (inputValue === "") {
             return;
         }
-        chatPingSocket.emit("message", {
+        chatPingAxios.post('/match/send-message', {
             message: inputValue
+        }).then(response => {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+            input.current.value = "";
+        }).catch(e => {
+            console.log(e.response?.data);
         });
-        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        input.current.value = "";
     };
 
     const finishChatting = () => {
         chatPingAxios.post('/match/finish')
-            .then(response => {
-                handleFlow();
-            })
+            .then(_ => {})
             .catch(e => {
                 console.log(e);
             });
     };
+
+    useEffect(() => {
+        chatPingSocket.on('message', (data) => {
+            setChatList(data);
+            setTimeout(() => {
+                chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+            }, 100);
+        });
+        chatPingAxios.get('/match/chat')
+            .then(response => {
+                const data = response.data;
+                setChatList(data);
+                setTimeout(() => {
+                    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+                }, 100)
+            })
+    }, []);
 
     return (
         <Container>
@@ -50,7 +69,8 @@ const Chat = () => {
                             onClick={finishChatting}>나가기</Button>
                 </InfoContainer>
                 <ChatContainer ref={chatContainerRef}>
-                    {chatList.map((item, index) => (<ChatCell chat={item} isMe={true}/>))}
+                    {chatList.map((item, index) => (
+                        <ChatCell chat={item} isMe={item.sender.email === getCookie('EMAIL')}/>))}
                 </ChatContainer>
                 <InputContainer>
                     <Input ref={input} onKeyDown={(e) => {

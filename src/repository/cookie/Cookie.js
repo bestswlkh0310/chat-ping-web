@@ -8,10 +8,20 @@ export const TokenType = {
     REFRESH_TOKEN: 'REFRESH_TOKEN',
 }
 
-export const getToken = (type) => {
+export const FlowType = {
+    IDLE: 'IDLE',
+    MATCHED: 'MATCHED'
+}
+
+export const getCookie = (type) => {
     return cookies.get(type);
 }
 
-export const setToken = (value, type) => {
+export const setCookie = (value, type) => {
     cookies.set(type, value);
+}
+
+export const clearToken = () => {
+    cookies.set(TokenType.ACCESS_TOKEN, null);
+    cookies.set(TokenType.REFRESH_TOKEN, null);
 }

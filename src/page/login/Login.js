@@ -4,7 +4,7 @@ import chatPingAxios from "../../repository/http/Http";
 import Text from "../../component/text/Text";
 import {FontStyle} from "../../component/text/FontStyle";
 import Label from "../../component/label/Label";
-import {setToken, TokenType} from "../../repository/cookie/Cookie";
+import {setCookie, TokenType} from "../../repository/cookie/Cookie";
 import {useNavigate} from "react-router-dom";
 
 const Login = () => {
@@ -18,8 +18,8 @@ const Login = () => {
         }).then(response => {
             const res = response.data;
             const {accessToken, refreshToken} = res;
-            setToken(accessToken, TokenType.ACCESS_TOKEN);
-            setToken(refreshToken, TokenType.REFRESH_TOKEN);
+            setCookie(accessToken, TokenType.ACCESS_TOKEN);
+            setCookie(refreshToken, TokenType.REFRESH_TOKEN);
             navigate('/');
         }).catch(e => {
             console.log(e);

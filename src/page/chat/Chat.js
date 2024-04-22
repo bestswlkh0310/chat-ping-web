@@ -16,7 +16,7 @@ import Button from "../../component/button/Button";
 import ButtonType from "../../component/button/ButtonType";
 import ButtonSize from "../../component/button/ButtonSize";
 import ButtonColor from "../../component/button/ButtonColor";
-import {getToken, TokenType} from "../../repository/cookie/Cookie";
+import {getCookie, TokenType} from "../../repository/cookie/Cookie";
 import {useNavigate} from "react-router-dom";
 
 const Chat = () => {
@@ -28,7 +28,7 @@ const Chat = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!getToken(TokenType.ACCESS_TOKEN)) {
+        if (!getCookie(TokenType.ACCESS_TOKEN)) {
             navigate('/login');
         }
         // chatPingSocket.emit('online', id);

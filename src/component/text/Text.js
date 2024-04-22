@@ -5,13 +5,14 @@ const Text = (
     {
         fontStyle=FontStyle.BODY,
         fontSize,
+        fontWeight,
         children
     }
 ) => {
     return (
         <TextContainer
             fontSize={`${fontSize ?? FontStyle.fontSize(fontStyle)}px`}
-            fontWeight={`${FontStyle.fontWeight(fontStyle)}`}
+            fontWeight={`${fontWeight ?? FontStyle.fontWeight(fontStyle)}`}
         >{children}</TextContainer>
     );
 };

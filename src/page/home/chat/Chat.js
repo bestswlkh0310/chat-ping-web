@@ -1,27 +1,25 @@
-import {ChatContainer, Container, Content, InfoContainer, Input, InputContainer} from "../home/HomeStyle";
-import Text from "../../component/text/Text";
-import {FontStyle} from "../../component/text/FontStyle";
-import Button from "../../component/button/Button";
-import ButtonColor from "../../component/button/ButtonColor";
-import ButtonType from "../../component/button/ButtonType";
-import ButtonSize from "../../component/button/ButtonSize";
-import ChatCell from "../home/component/ChatCell";
-import {useContext, useEffect, useRef, useState} from "react";
-import chatPingSocket from "../../repository/socket/Socket";
-import chatPingAxios from "../../repository/http/Http";
-import {FlowContext} from "../../App";
-import {getCookie} from "../../repository/cookie/Cookie";
+import Text from "../../../component/text/Text";
+import {FontStyle} from "../../../component/text/FontStyle";
+import Button from "../../../component/button/Button";
+import ButtonColor from "../../../component/button/ButtonColor";
+import ButtonType from "../../../component/button/ButtonType";
+import ButtonSize from "../../../component/button/ButtonSize";
+import ChatCell from "../component/ChatCell";
+import React, {useEffect, useRef, useState} from "react";
+import chatPingSocket from "../../../repository/socket/Socket";
+import chatPingAxios from "../../../repository/http/Http";
+import {getCookie} from "../../../repository/cookie/Cookie";
+import {ChatContainer, Container, Content, Input, InputContainer} from "./ChatStyle";
+import {InfoContainer} from "../start/StartStyle";
 
 const Chat = () => {
 
     const chatContainerRef = useRef(null);
     const [chatList, setChatList] = useState([]);
     const input = useRef(null);
-    const {handleFlow} = useContext(FlowContext);
-
     const sendMessage = () => {
         const inputValue = input.current.value;
-        if (inputValue === "") {
+        if (inputValue.isEmpty()) {
             return;
         }
         chatPingAxios.post('/match/send-message', {

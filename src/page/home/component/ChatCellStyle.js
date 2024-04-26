@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     display: flex;
-    padding: 8px;
+    padding: 4px 0;
     align-items: center;
     justify-content: ${props => props.align};
     gap: 10px;

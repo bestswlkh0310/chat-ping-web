@@ -7,8 +7,8 @@ const ChatCell = ({chat, isMe}) => {
         <Container align={isMe ? "end" : "start"}>
             <Content
                 borderRadius={isMe ? '16px 0 16px 16px' : '0 16px 16px 16px'}
-                background={isMe ? Color.WHITE : Color.PRIMARY}
-                foregroundColor={isMe ? Color.PRIMARY : Color.WHITE}
+                background={isMe ? Color.PRIMARY600 : Color.WHITE}
+                foregroundColor={isMe ? Color.WHITE : Color.PRIMARY600}
             >
                 <ContentText>{chat.message}</ContentText>
             </Content>

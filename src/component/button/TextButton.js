@@ -3,8 +3,9 @@ import Text from "../text/Text";
 import ButtonType from "./ButtonType";
 import ButtonSize from "./ButtonSize";
 import ButtonColor from "./ButtonColor";
+import Button from "./Button";
 
-const Button = (
+const TextButton = (
     {
         enabled = true,
         style,
@@ -16,19 +17,19 @@ const Button = (
     }
 ) => {
     return (
-        <ButtonContainer
-            style={style}
-            color={ButtonType.foreground(type, color, enabled)}
-            background={ButtonType.background(type, color, enabled)}
-            borderColor={ButtonType.borderColor(type, color, enabled)}
-            padding={ButtonSize.padding(size)}
-            onClick={onClick}
-            disabled={!enabled}
+        <Button
             enabled={enabled}
+            style={style}
+            type={type}
+            color={color}
+            size={size}
+            onClick={onClick}
         >
-            {children}
-        </ButtonContainer>
+            <Text fontStyle={ButtonSize.fontStyle(size)}>
+                {children}
+            </Text>
+        </Button>
     );
 };
 
-export default Button;
+export default TextButton;

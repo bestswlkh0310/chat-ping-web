@@ -1,6 +1,6 @@
 import Text from "../../../component/text/Text";
 import {FontStyle} from "../../../component/text/FontStyle";
-import Button from "../../../component/button/Button";
+import TextButton from "../../../component/button/TextButton";
 import ButtonColor from "../../../component/button/ButtonColor";
 import ButtonType from "../../../component/button/ButtonType";
 import ButtonSize from "../../../component/button/ButtonSize";
@@ -9,24 +9,30 @@ import React, {useEffect, useRef, useState} from "react";
 import chatPingSocket from "../../../repository/socket/Socket";
 import chatPingAxios from "../../../repository/http/Http";
 import {getCookie} from "../../../repository/cookie/Cookie";
-import {ChatContainer, Container, Content, Input, InputContainer} from "./ChatStyle";
-import {InfoContainer} from "../start/StartStyle";
+import {ChatContainer, Container, Content, InfoContainer, Input, InputContainer} from "./ChatStyle";
+import { ReactComponent as SendFill } from "../../../assets/send_fill.svg";
+import { ReactComponent as LogoutLine } from "../../../assets/logout_line.svg";
+import Color from "../../../component/color/Color";
+import Button from "../../../component/button/Button";
 
-const Chat = () => {
+const Chat = (
+    {
+        handleFlow
+    }
+) => {
 
     const chatContainerRef = useRef(null);
     const [chatList, setChatList] = useState([]);
-    const input = useRef(null);
+    const [text, setText] = useState('');
     const sendMessage = () => {
-        const inputValue = input.current.value;
-        if (inputValue.isEmpty()) {
+        if (text === "") {
             return;
         }
         chatPingAxios.post('/match/send-message', {
-            message: inputValue
+            message: text
         }).then(response => {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-            input.current.value = "";
+            setText('');
         }).catch(e => {
             console.log(e.response?.data);
         });
@@ -34,8 +40,11 @@ const Chat = () => {
 
     const finishChatting = () => {
         chatPingAxios.post('/match/finish')
-            .then(_ => {})
+            .then(_ => {
+                handleFlow()
+            })
             .catch(e => {
+                handleFlow()
                 console.log(e);
             });
     };
@@ -58,30 +67,30 @@ const Chat = () => {
     }, []);
 
     return (
-        <Container>
-            <Content>
-                <InfoContainer>
-                    <Text fontStyle={FontStyle.TITLE}>대화중</Text>
-                    <div style={{flex: 1}}></div>
-                    <Button color={ButtonColor.GRAY} type={ButtonType.OUTLINE} size={ButtonSize.SMALL}
-                            onClick={finishChatting}>나가기</Button>
-                </InfoContainer>
-                <ChatContainer ref={chatContainerRef}>
-                    {chatList.map((item, index) => (
-                        <ChatCell chat={item} isMe={item.sender.email === getCookie('EMAIL')}/>))}
-                </ChatContainer>
-                <InputContainer>
-                    <Input ref={input} onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            sendMessage();
-                        }
-                    }}/>
-                    <Button style={{
-                        minWidth: '100px'
-                    }} onClick={sendMessage}>보내기</Button>
-                </InputContainer>
-            </Content>
-        </Container>
+        <>
+            <InfoContainer>
+                <Text fontStyle={FontStyle.TITLE}>대화중</Text>
+                <div style={{flex: 1}}></div>
+                <Button color={ButtonColor.GRAY} type={ButtonType.OUTLINE} size={ButtonSize.SMALL}
+                            onClick={finishChatting}>
+                    <LogoutLine fill={Color.GRAY500}/>
+                </Button>
+            </InfoContainer>
+            <ChatContainer ref={chatContainerRef}>
+                {chatList.map((item, index) => (
+                    <ChatCell chat={item} isMe={item.sender.email === getCookie('EMAIL')}/>))}
+            </ChatContainer>
+            <InputContainer>
+                <Input value={text} onChange={i => setText(i.target.value)} onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        sendMessage();
+                    }
+                }}/>
+                <TextButton enabled={text !== ""} onClick={sendMessage}>
+                    <SendFill fill={Color.WHITE} />
+                </TextButton>
+            </InputContainer>
+        </>
     );
 }
 

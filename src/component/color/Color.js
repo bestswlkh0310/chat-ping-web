@@ -1,8 +1,14 @@
 class Color {
-    static PRIMARY = '#FF4D00'
+    static PRIMARY700 = '#E84600'
+    static PRIMARY600 = '#FF4D00'
+    static PRIMARY500 = '#FF814A'
+    static PRIMARY400 = '#FFA47D'
+    static PRIMARY300 = '#FFCDB7'
+    static PRIMARY200 = '#FFE9E0'
+    static PRIMARY100 = '#FFF4EF'
 
-    static WHITE = 'white'
-    static BLACK = 'black'
+    static WHITE = '#FFFFFF'
+    static BLACK = '#000000'
     static TRANSPARENT = '#FF000000'
 
     static GRAY100 = '#F4F5F9'

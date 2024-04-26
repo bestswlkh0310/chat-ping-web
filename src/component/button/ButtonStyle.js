@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {darkenHexColor} from "../../util/Color+darkenHexColor";
 
 export const ButtonContainer = styled.button`
     // layout
@@ -12,11 +13,14 @@ export const ButtonContainer = styled.button`
     background: ${props => props.background};
     outline: none;
     color: ${props => props.color};
-    cursor: pointer;
+    cursor: ${props => props.enabled ? 'pointer' : 'auto'};
     border: 2px solid ${props => props.borderColor};
     
+    &:hover {
+        background: ${props => props.enabled ? darkenHexColor(props.background, 5) : props.background};
+    }
     &:active {
-        scale: 0.94;
+        scale: ${props => props.enabled ? 0.94: 1};
     }
     transition: background 0.2s, color 0.2s, scale 0.2s ease-out;
 `

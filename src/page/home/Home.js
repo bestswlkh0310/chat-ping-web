@@ -33,8 +33,8 @@ const Home = () => {
     }
 
     useEffect(() => {
-        handleFlow();
         handleSocketLogin();
+        handleFlow();
 
         chatPingSocket.on('flow', () => {
             handleFlow();
@@ -42,9 +42,9 @@ const Home = () => {
     }, []);
     return (
         <>
-            {flow === 'IDLE' && <Start/>}
+            {flow === 'IDLE' && <Start handleFlow={handleFlow}/>}
             {flow === 'MATCHING' && <Matching/>}
-            {flow === 'MATCHED' && <Chat/>}
+            {flow === 'MATCHED' && <Chat handleFlow={handleFlow}/>}
         </>
     );
 };
